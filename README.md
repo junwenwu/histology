@@ -1,6 +1,6 @@
 ## Histology Usecase Demo with Intel OpenVINO™ 
 
-[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/ravi9/histology/master?labpath=histology_demo.ipynb)
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/junwenwu/histology/master?labpath=histology_demo.ipynb)
 
 ## Introduction
 

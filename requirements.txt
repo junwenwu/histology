@@ -2,7 +2,6 @@ addict==2.4.0
 matplotlib==3.5.1
 numpy==1.19.5
 opencv_python_headless==4.2.0.32
-openvino==2022.1.0
 openvino_dev==2021.4.2
 openvino_tensorflow==1.1.0
 tensorflow==2.7.0

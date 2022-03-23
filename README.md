@@ -1,5 +1,7 @@
 ## Histology Usecase Demo with Intel OpenVINO™ 
 
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/ravi9/histology/master?labpath=histology_demo.ipynb)
+
 ## Introduction
 
 This demo uses the [colorectal histology images dataset](https://www.tensorflow.org/datasets/catalog/colorectal_histology) to train a simple convolutional neural network in TensorFlow and demonstrates how to use OpenVINO™ integration with Tensorflow and OpenVINO™ Inference Engine to do inference on different Hardware architecture.

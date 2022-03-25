@@ -37,7 +37,7 @@ def set_OMP_vars(num_cores):
     #os.environ["KMP_AFFINITY"]   = "granularity=thread,compact"
 
 def load_input_data(data_directory):
-    print("data directory is: ", data_directory)
+    # print("data directory is: ", data_directory)
     (ds), ds_info =  tfds.load(data_directory
                                , data_dir="."
                                , shuffle_files=True, split='train'
@@ -45,7 +45,7 @@ def load_input_data(data_directory):
                                , as_supervised=True)
 
     assert isinstance(ds, tf.data.Dataset)
-    print(ds_info)
+    #print(ds_info)
     return(ds, ds_info)
 
 def normalize_img(image, label):
@@ -127,7 +127,7 @@ def create_model(ds_info):
                   , metrics=[tf.metrics.SparseCategoricalAccuracy()],
     )
 
-    model.summary()
+    #model.summary()
     return(model)
     
 def create_callbacks(output_dir):
@@ -183,14 +183,14 @@ def main():
             raise Exception("Specify input collateral")
     
     data_directory = args['input']
-    assert(os.path.isdir(data_directory), "Input data directory {0} does not exist!".format(data_directory))
+    #assert(os.path.isdir(data_directory), "Input data directory {0} does not exist!".format(data_directory))
     output_dir = args['output']
-    assert(os.path.isdir(output_dir), "Output directory {0} does not exist!".format(output_dir))
+    #assert(os.path.isdir(output_dir), "Output directory {0} does not exist!".format(output_dir))
     epochs = args['epochs']
     device = args["device"]
     num_cores = args["cores"]
     test_data_dir = args["test_data_dir"]
-    assert(os.path.isdir(test_data_dir), "Test data directory {0} does not exist!".format(test_data_dir))
+    #assert(os.path.isdir(test_data_dir), "Test data directory {0} does not exist!".format(test_data_dir))
 
     if device == "CPU":
         log.info("Set OMP parameters")
@@ -219,6 +219,7 @@ def main():
     frozen_func = convert_variables_to_constants_v2(full_model)
     frozen_func.graph.as_graph_def()
     layers = [op.name for op in frozen_func.graph.get_operations()]
+    '''
     print("-" * 60) 
     print("Frozen model layers: ")
     for layer in layers:
@@ -228,6 +229,7 @@ def main():
     print(frozen_func.inputs)
     print("Frozen model outputs: ")
     print(frozen_func.outputs)
+    '''
     # Save frozen graph to disk
     tf.io.write_graph(graph_or_graph_def=frozen_func.graph,
                       logdir=output_dir,

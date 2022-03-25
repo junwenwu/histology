@@ -126,8 +126,6 @@ def main():
     exec_net = ie.load_network(network=net, device_name=device_type, num_requests=num_instance)
     n, c, h, w = net.input_info[input_blob].input_data.shape
 
-    print("N, C, H, W:", n,c,h,w)
-
     # Start inference request execution. Wait for last execution being completed
     for ind in range(0, num_samples, num_instance):
         if ind+num_instance >= num_samples:
@@ -144,7 +142,7 @@ def main():
             for _, probs in enumerate(res.buffer):
                     probs = np.squeeze(probs)
                     pred_labels[ind] = np.argmax(probs)
-                    log.info(f"Current {ind}th class label is {np.argmax(probs)}")
+                    #log.info(f"Current {ind}th class label is {np.argmax(probs)}")
         else:
             infer_request = []
             for i in range(num_instance):
@@ -160,7 +158,7 @@ def main():
                 for _, probs in enumerate(res.buffer):
                     probs = np.squeeze(probs)
                     pred_labels[ind+i] = np.argmax(probs)
-                    log.info(f"Current {ind + i}th sample's class label is {np.argmax(probs)}")
+                    #log.info(f"Current {ind + i}th sample's class label is {np.argmax(probs)}")
 
     output_file = os.path.join(output, 'stats'+'.txt')
     log.info(f"Write the prediction into the {output_file} file.")

@@ -145,7 +145,7 @@ def read_tensor_from_image_file(image_file,
 
     return result
 
-def run_image_infer(model_file, input_layer, output_layer,label_file,file_name,input_height,input_width, input_mean,input_std, backend_name,flag_enable):
+def run_image_infer(model_file, input_layer, output_layer,label_file,file_name,input_height,input_width, input_mean,input_std, backend_name,flag_enable, n_iterations = 1):
     config = tf.compat.v1.ConfigProto()
     with tf.compat.v1.Session(graph=graph, config=config) as sess:
         t = read_tensor_from_image_file(
@@ -161,14 +161,17 @@ def run_image_infer(model_file, input_layer, output_layer,label_file,file_name,i
 
         # Run
         start = time.time()
-        results = sess.run(output_operation.outputs[0],
+        for i in range(n_iterations):
+            results = sess.run(output_operation.outputs[0],
                            {input_operation.outputs[0]: t})
         elapsed = time.time() - start
-        print('Inference time in ms: %f' % (elapsed * 1000))
-        result_file_name = "results/" + "tensorflow_"+ str(flag_enable) + backend_name + ".txt"
-        f = open(result_file_name, "w")
-        f.write(str((elapsed * 1000)))
-        f.close()
+        print('Inference time for using {0} Tensorflow in ms: {1:.4f}'.format(flag_enable, elapsed * 1000/n_iterations))
+        print('Throughput for using {0} Tensorflow: {1:.2f} FPS'.format(flag_enable, n_iterations/elapsed))
+        if n_iterations == 1:
+            result_file_name = "results/" + "tensorflow_"+ str(flag_enable) + backend_name + ".txt"
+            f = open(result_file_name, "w")
+            f.write(str((elapsed * 1000)))
+            f.close()
     results = np.squeeze(results)
 
     # print labels
@@ -215,6 +218,7 @@ if __name__ == "__main__":
     parser.add_argument("-d","--backend", help="backend option. Default is CPU")
     parser.add_argument("-f", "--flag", help="disable backend")
     parser.add_argument("-it","--input_type", help="input type either video or image")
+    parser.add_argument("-nites","--num_iterations", help="number of iterations")
     args = parser.parse_args()
 
     if args.graph:
@@ -233,6 +237,8 @@ if __name__ == "__main__":
             label_file = None
     if args.input:
         input_file = args.input
+    if args.num_iterations:
+        n_iterations = int(args.num_iterations)
     if args.input_height:
         input_height = args.input_height
     if args.input_width:
@@ -278,7 +284,9 @@ if __name__ == "__main__":
         labels = load_labels(label_file)
     assert os.path.exists(input_file), "Could not find input file path"
 
-    
-    run_image_infer(model_file, input_layer, output_layer,label_file,input_file,input_height,input_width, input_mean,input_std, backend_name,filename)
+    if args.num_iterations:
+        run_image_infer(model_file, input_layer, output_layer,label_file,input_file,input_height,input_width, input_mean,input_std, backend_name, filename, n_iterations)
+    else:
+        run_image_infer(model_file, input_layer, output_layer,label_file,input_file,input_height,input_width, input_mean,input_std, backend_name, filename)
     #Load the labels
     
